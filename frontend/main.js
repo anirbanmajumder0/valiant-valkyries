@@ -211,30 +211,7 @@ function createSnake() {
 function doDrawing() {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     //draw the snake
-    for (var z = snake_size - 1; z >= 0; z--) {
-
-        if ((z == 0) && !(bug_feature)) {
-            //head
-            draw(head, x[z], y[z])
-        } else if ((z == snake_size-1) && !(bug_feature)) {
-            //tail
-            //draw(tail, x[z], y[z])
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(x[z], y[z], BLOCK_SIZE, BLOCK_SIZE);
-        } else if ((z == 0) && bug_feature) {
-            //head if bug_feature is true
-            //draw(tail, x[z], y[z])
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(x[z], y[z], BLOCK_SIZE, BLOCK_SIZE);
-        } else if ((z == snake_size-1) && bug_feature) {
-            //head if bug_feature is true
-            draw(head, x[z], y[z])
-        } else {
-            //body
-            draw(body, x[z], y[z])
-
-        }
-    }
+    drawSnake("blue");
     //draw the food_list
     for (var i = 0; i < food_list.length; i++) {
         food = food_list[i];
@@ -261,6 +238,41 @@ function doDrawing() {
 //added a draw function to draw the images
 function draw(img, x, y, width = BLOCK_SIZE, height = BLOCK_SIZE) {
     ctx.drawImage(img, x, y, width, height);
+}
+
+//draw snake
+function drawSnake(color) {
+    factor = 1;
+    if (snake_size > BLOCK_SIZE/2) {
+        factor = snake_size / BLOCK_SIZE;
+    }
+    temp = 0;
+    radius = BLOCK_SIZE/2;
+    if (color == 'blue') {
+        color = 'blue';
+        // draw the snake
+        for (var z = 0; z < snake_size; z++) {
+            if (z == 0) {
+                // draw head
+                drawCircle(x[z], y[z], radius, color);
+            } else {
+                // draw body
+                drawCircle(x[z], y[z], radius, color);
+                temp++;
+                if (temp == factor) {
+                    temp = 0;
+                    radius--;
+                }
+            }
+        }
+    }
+}
+//draw the circle with radius r at (x,y)
+function drawCircle(x, y, r, color) {
+    ctx.beginPath();
+    ctx.arc(x, y, r-1, 0, 2 * Math.PI);
+    ctx.fillStyle = color;
+    ctx.fill();
 }
 //function to update score
 function updateScore() {
